@@ -1,1 +1,10 @@
-# oran_exam
+# Oran_Exam
+
+
+  - HTML
+
+  - JavaScript
+  
+  - jQuery
+ 
+  - PHP
