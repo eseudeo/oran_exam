@@ -6,8 +6,6 @@
 
 <span id="naver" onclick="naver_move();" style="border:1px solid #000;">네이버</span>
 
-
-
 <script type="text/javascript">
 
 function naver_move() {
