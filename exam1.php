@@ -12,7 +12,6 @@
   창문
 </div>
 
-
 <script type="text/javascript">
 function door_open() {
 	document.getElementById("door").innerHTML = '창문 열림';
