@@ -4,7 +4,6 @@ table {
   border-collapse: separate;
   width: 70%;
 }
-
 th {
 	padding: 8px;
 	background-color: #acc2d9;
@@ -27,7 +26,6 @@ td {
 	text-align: left;
 	width: 50%;
 }
-
 </style>
 
 <pre>
@@ -41,8 +39,7 @@ td {
 
 	//페이징
 	$count_sql = "SELECT * FROM exam_board";
-	$count_sql_result = mysqli_query($connect_db, $count_sql);
-
+	$count_sql_result = mysqli_query($connect_db, $count_sql);	
 
 	$total_row = mysqli_num_rows($count_sql_result);
 	$list_num = 5;
@@ -55,19 +52,38 @@ td {
 		}
 	$limit_st = ($page-1)*5;
 
+	
+	//검색
+	$category = $_GET['select_op'];  //title or author 값이 넘어옴 value 값
+	$search_txt = $_GET['search_txt'];  //입력 값
+	
 	$list_sql = "SELECT * FROM exam_board LIMIT $limit_st, $list_num";
 
-	$result = mysqli_query($connect_db, $list_sql);
 
-            //쿼리 조회 결과가 있는지 확인
+	$search_sql = "SELECT * FROM exam_board WHERE $category LIKE '%$search_txt%' LIMIT $limit_st, $list_num";
+
+	if($search_txt==""){
+		$result = mysqli_query($connect_db, $list_sql);
+	}
+	else if($search_txt != ""){
+		$search_count_sql = "SELECT * FROM exam_board WHERE $category LIKE '%$search_txt%'";
+		$count_sql_result = mysqli_query($connect_db, $search_count_sql);
+		$search_total_row = mysqli_num_rows($count_sql_result);
+		$search_total_page = ceil($search_total_row / $list_num);
+
+		$result = mysqli_query($connect_db, $search_sql);
+		$total_page = $search_total_page;
+		
+	}
+
+      //쿼리 조회 결과가 있는지 확인
             if($result) {
                 echo "조회 성공";
             } else {
                 echo "결과 없음: ".mysqli_error($connect_db);
-            }
+            }      
 
 ?>
-
 <div align="center">
 	<table>
 		<colgroup width="70%"></colgroup>
@@ -87,23 +103,26 @@ td {
 		<?
 		}
 		?>
-
 	</table>
+
 	</br>
 
 	<div >
+
 		<?for ($i=1; $i<=$total_page;$i++){?>
 		<a href= "<?=$PHP_SELF?>?page=<?=$i?>" class="pg"><?=$i?></a>
 		<!--page는 변수 -->
 		<?}?>
+
 	</div>
+
 	<br/>
 	
-		<form method="post" action="" id="search_form" class="search_form">
+		<form method="get" action="exam33.php" id="search_form" class="search_form">
 	<div>
 			<select id="select_op" name="select_op">
-				<option value="1" id="title">제목</option>
-				<option value="4" id="content">내용</option>
+				<option value="title" id="title">제목</option>
+				<option value="content" id="content">내용</option>
 			</select>
 			<input type="text" id="search_txt" name="search_txt" value="">
 			<input type="submit" id="search_btn" class ="txt_btn" value="검색">
@@ -118,7 +137,6 @@ td {
 		$("#search_form").submit(function(event){
 			var $search_s = $("#select_op option:selected").val();
 			var $search_in = $("#search_txt").val();
-			alert($search_s);
 		});
 });
 </script>
