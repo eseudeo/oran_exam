@@ -58,8 +58,8 @@ a:hover { color: #acc2d9; }
     또한 글쓰기 버튼을 추가하여 눌렀을 때 글을 새로 작성하는 페이지로 이동하게 해주세요.
 </pre>
 <?
-	$connect_db = @mysqli_connect("localhost", "est1114", "est!!!$") or die('MySQL Connect Error!!!');
-	$select_db  = @mysqli_select_db($connect_db, "est1114") or die('MySQL DB Error!!!');
+	$connect_db = @mysqli_connect("localhost", "id", "pw") or die('MySQL Connect Error!!!');
+	$select_db  = @mysqli_select_db($connect_db, "db_name") or die('MySQL DB Error!!!');
 	
 	//페이징
 	$count_sql = "SELECT * FROM exam_board";
