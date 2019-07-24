@@ -19,8 +19,8 @@
 		mysql_close($connect_db); 
 
 	}
-?> 
-
+?>
+   
 <h2>글 삭제</h2>
 <div>
 	<form id="pw_frm" name="pw_frm" method="post">
@@ -30,7 +30,8 @@
 		<div>
 		비밀번호
 		<input type="password" name="pw" id="pw">
-		<input type="submit" value="확인" id="check">
+		<input type="submit" value="확 인" id="check">
+		<input type="button" value="취 소" id="cancel" onclick="history.back(-1); return false;">
 		</div>
 	</form>
 </div>
@@ -42,12 +43,15 @@ $(document).ready(function() {
 	$('#pw_frm').submit(function(){ 
 		if($('#pw').val()=='') { 
 			alert("비밀번호를 입력해주세요!");
+			$('#pw').focus();
 			event.preventDefault();
 			return false;
 		}
 		if ($('#pw').val() != $pw_db)
 		{
 			alert("비밀번호가 일치하지 않습니다!");
+			$('#pw').val('');
+			$('#pw').focus();
 			event.preventDefault();
 			return false;
 		}
