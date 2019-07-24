@@ -13,12 +13,12 @@ th {
   background-color: #acc2d9;
   border: none;
   color: white;
-  padding: 15px 20px;
+  padding: 10px 15px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+
   cursor: pointer;
 }
 td {
@@ -26,6 +26,30 @@ td {
 	text-align: left;
 	width: 50%;
 }
+#category {
+    width: 5%;
+    height: 40px;
+    font-size: 14px;
+    vertical-align: top;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+#search_txt {
+    width: 25%;
+    height: 40px;
+    font-size: 14px;
+    vertical-align: top;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+    background: transparent;
+}
+
+a:hover { color: #acc2d9; }
+
 </style>
 
 <pre>
@@ -34,54 +58,82 @@ td {
     또한 글쓰기 버튼을 추가하여 눌렀을 때 글을 새로 작성하는 페이지로 이동하게 해주세요.
 </pre>
 <?
-	$connect_db = @mysqli_connect("localhost", "id", "pw") or die('MySQL Connect Error!!!');
-	$select_db  = @mysqli_select_db($connect_db, "db_name") or die('MySQL DB Error!!!');
-
+	$connect_db = @mysqli_connect("localhost", "est1114", "est!!!$") or die('MySQL Connect Error!!!');
+	$select_db  = @mysqli_select_db($connect_db, "est1114") or die('MySQL DB Error!!!');
+	
 	//페이징
 	$count_sql = "SELECT * FROM exam_board";
 	$count_sql_result = mysqli_query($connect_db, $count_sql);	
 
 	$total_row = mysqli_num_rows($count_sql_result);
-	$list_num = 5;
-	$total_page = ceil($total_row / $list_num);
+
+	$list_num = 5; //게시물 수
+	$block_num = 5; //페이지 목록 수
+
+	$total_page = ceil($total_row / $list_num); //전체 게시물 페이지
+	$total_block = ceil ($total_page / $block_num); //전체 페이지 목록 
 
 	if($_GET[page] && $_GET[page] > 0){
 			$page = $_GET[page];
 		}else{
 			$page = 1;
 		}
-	$limit_st = ($page-1)*5;
 
-	
-	//검색
-	$category = $_GET['select_op'];  //title or author 값이 넘어옴 value 값
-	$search_txt = $_GET['search_txt'];  //입력 값
-	
-	$list_sql = "SELECT * FROM exam_board LIMIT $limit_st, $list_num";
+	$block = ceil ($page / $block_num);
 
+	$limit_st = ($page-1)*$list_num; //limit 시작 숫자
 
-	$search_sql = "SELECT * FROM exam_board WHERE $category LIKE '%$search_txt%' LIMIT $limit_st, $list_num";
-
-	if($search_txt==""){
-		$result = mysqli_query($connect_db, $list_sql);
+	if($_GET[search_txt]){
+		$category = $_GET[category];
+		$search_txt = $_GET[search_txt];
 	}
-	else if($search_txt != ""){
-		$search_count_sql = "SELECT * FROM exam_board WHERE $category LIKE '%$search_txt%'";
-		$count_sql_result = mysqli_query($connect_db, $search_count_sql);
-		$search_total_row = mysqli_num_rows($count_sql_result);
-		$search_total_page = ceil($search_total_row / $list_num);
+	
+	$list_sql = "SELECT * FROM exam_board ";
 
-		$result = mysqli_query($connect_db, $search_sql);
-		$total_page = $search_total_page;
+	$sql_search = " where (1) ";
+
+	if($search_txt != ""){
+		$sql_search .= " and $category like '%$search_txt%' ";
+	}
+
+	$list_sql .= $sql_search;
+
+	$result = mysqli_query($connect_db, $list_sql);
+	$total_row = mysqli_num_rows($result);
+	$total_page = ceil($total_row / $list_num);
+
+	if ($page == "") $page = 1;
+	$from_record = ($page - 1) * $list_num; // 시작 열을 구함
+
+	$list_sql .= " order by title asc limit $from_record, $list_num ";
+	
+	$result = mysqli_query($connect_db, $list_sql);
 		
-	}
+	// 페이지번호 & 블럭 설정
+	//$first_page = (($block - 1) * $block_num) + 1; // 첫번째 페이지번호
+	//$last_page = min ($total_page, $block * $block_num); // 마지막 페이지번호
 
       //쿼리 조회 결과가 있는지 확인
+	  /*
             if($result) {
                 echo "조회 성공";
             } else {
                 echo "결과 없음: ".mysqli_error($connect_db);
             }      
+		*/
+/*		 
+		$prev_page = $page - 1; // 이전페이지
+		$next_page = $page + 1; // 다음페이지
+		 
+		$prev_block = $block - 1; // 이전블럭
+		$next_block = $block + 1; // 다음블럭
+		 
+		// 이전블럭을 블럭의 마지막으로 하려면...
+		$prev_block_page = $prev_block * $block_num; // 이전블럭 페이지번호
+		// 이전블럭을 블럭의 첫페이지로 하려면...
+		//$prev_block_page = $prev_block * $block_num - ($block_num - 1);
+		$next_block_page = $next_block * $block_num - ($block_num - 1); // 다음블럭 페이지번호
+*/		 
 
 ?>
 <div align="center">
@@ -94,11 +146,12 @@ td {
 			<th>글쓴이</th>
 		</tr>
 		<? 
-			while($row = mysqli_fetch_row($result)){
+			while($row = mysqli_fetch_assoc($result)){
+			
 		?>
 		<tr>
-			<td><? echo $row["1"]; ?></td>
-			<td><? echo $row["2"]; ?></td>
+			<td><span><a href="exam33_post.php?no=<?=$row['id']?>" id="post"><? echo $row['title']; ?></a></span></td>
+			<td><? echo $row['author']; ?></td>
 		</tr>
 		<?
 		}
@@ -109,22 +162,33 @@ td {
 
 	<div >
 
-		<?for ($i=1; $i<=$total_page;$i++){?>
-		<a href= "<?=$PHP_SELF?>?page=<?=$i?>" class="pg"><?=$i?></a>
-		<!--page는 변수 -->
-		<?}?>
+   <?for ($i=1; $i<=$total_page; $i++){
+         if($search_txt==""){
+      ?>
+            <a href= "<?=$PHP_SELF ?>?page=<?=$i?>" class="pg"><?=$i?></a>
+      <?
+         }
+      ?>
+      <?
+         if($search_txt != ""){
+      ?>
 
+      <a href= "<?=$PHP_SELF ?>?page=<?=$i?>&category=<?=$category?>&search_txt=<?=$search_txt?>" class="pg"><?=$i?></a>
+      <!--page는 변수 -->
+      
+      <?}?>
+         <?}?>
 	</div>
 
 	<br/>
 	
 		<form method="get" action="exam33.php" id="search_form" class="search_form">
 	<div>
-			<select id="select_op" name="select_op">
+			<select id="category" name="category">
 				<option value="title" id="title">제목</option>
 				<option value="content" id="content">내용</option>
 			</select>
-			<input type="text" id="search_txt" name="search_txt" value="">
+			<input type="text" id="search_txt" name="search_txt" value="<?=$_GET[search_txt]?>">
 			<input type="submit" id="search_btn" class ="txt_btn" value="검색">
 		</form>
 
@@ -132,11 +196,3 @@ td {
 	</div>
 
 </div>
-<script type="text/javascript">
-	$(document).ready(function(){
-		$("#search_form").submit(function(event){
-			var $search_s = $("#select_op option:selected").val();
-			var $search_in = $("#search_txt").val();
-		});
-});
-</script>
