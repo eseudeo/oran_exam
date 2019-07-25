@@ -30,6 +30,9 @@ th {
   margin: 4px 2px;
   cursor: pointer;
 }
+.del {
+background-color: #1A5276;
+}
 #post {
     float: left;
     position: relative;
@@ -52,6 +55,7 @@ title {
     color: #777;
 }
 </style>
+
 <?
 	$connect_db = @mysqli_connect("localhost", "id", "pw") or die('MySQL Connect Error!!!');
 	$select_db  = @mysqli_select_db($connect_db, "db_name") or die('MySQL DB Error!!!');
@@ -84,13 +88,22 @@ title {
 	<?}?>
 	</br>
 </div>
-	<div align="center">
 
-
-		<input type="button" value="목 록" onclick="location='exam33.php'" class="frm_btn button"/>
+	<div align = "right">
+		<input type="button" value="수 정" onclick="location='exam32.php?id=<?=$id?>&edit=edit' " id="edit" class="frm_btn button"/>
+		<input type="button" value="삭 제" onclick="location='exam33_delete.php?id=<?=$id?>&del=del' " id="del" class="frm_btn button del"/>
 	</div>
 
-<script type="text/javascript">
+<div id="comments">
+	
+</div>
+	<input type="button" value="목 록" onclick="location='exam33.php'" class="frm_btn button"/>
 
-		
+<script type="text/javascript">
+$(document).ready(function() { 
+
+	$("#del").click(function(){ 
+	
+	});
+});
 </script>
