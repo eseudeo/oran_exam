@@ -1,7 +1,7 @@
 <?
 
 $connect_db = @mysqli_connect("localhost", "id", "pw") or die('MySQL Connect Error!!!');
-$select_db  = @mysqli_select_db($connect_db, "0") or die('MySQL DB Error!!!');
+$select_db  = @mysqli_select_db($connect_db, "db_name") or die('MySQL DB Error!!!');
 
 /*
 DB 명세표
@@ -15,6 +15,7 @@ CREATE TABLE `exam_board` (
   `editdate` datetime NOT NULL DEFAULT '1971-01-01 00:00:00' COMMENT '수정일시'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='게시판예제';
 */
+	$id = $_GET['id']; 
 
 	$title = $_POST['title']; 
 	$password = $_POST['password']; 
@@ -25,13 +26,21 @@ CREATE TABLE `exam_board` (
 	echo $password. "<br>"; 
 	echo $author. "<br>"; 
 	echo $content. "<br>"; 
-	
 
 	$insert_query = "INSERT INTO exam_board SET title='$title', password='$password', author='$author', content='$content', regdate = '".date('Y-m-d H:i:s')."' ";
-	echo $insert_query;
-	mysqli_query($connect_db, $insert_query);
 
+	$update_query = "UPDATE exam_board SET title='$title', password='$password', author='$author', content='$content', editdate = '".date('Y-m-d H:i:s')."' WHERE id='$id' ";
+
+//	echo $insert_query;
+//	echo $update_query;
+
+	if($id == ""){
+		mysqli_query($connect_db, $insert_query);
+	}
+	if($id != ""){
+		mysqli_query($connect_db, $update_query);
+	}
 
 //	입력이 완료되면 exam32.php 파일로 다시 돌아가도록 해주세요.(스크립트를 이용해도 됩니다)
-	echo ("<meta http-equiv='Refresh' content='1; URL=exam32.php'>");
+	echo ("<meta http-equiv='Refresh' content='1; URL=exam33.php'>");
 ?>
