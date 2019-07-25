@@ -90,7 +90,6 @@ background-color: #1A5276;
 
 <script type="text/javascript">
 	
-
 $(document).ready(function(){
 	
 var $id = "<? echo $id?>";
@@ -124,9 +123,7 @@ var $id = "<? echo $id?>";
 		if($id != ""){
 			$("#frm").attr('action', 'exam32_update.php?id=<?=$id?>');
 		}
-
 	});
-
 });
 		
 </script>
