@@ -1,5 +1,6 @@
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
-
+<? 
+?>
 <style>
 table {
   border-collapse: separate;
@@ -31,10 +32,26 @@ th {
   margin: 4px 2px;
   cursor: pointer;
 }
+.check {
+background-color: #1A5276;
+}
 </style>
 
 32. 직접 table 과 form 을 이용하여 게시판 입력 형태로 html 을 구성하고 실제로 값들을 입력받아서 exam32_update.php 파일로 값을 넘겨서 DB에 저장해보세요. 
 	DB명세표는 exam32_update.php 파일을 참조하세요. 간단하게 제목, 글쓴이, 패스워드, 내용 까지만 입력받으면 됩니다. ( 반드시 입력값을 스크립트를 이용하여 검증해야 합니다.)
+
+<? 
+	$id = $_GET[id];
+	
+	$connect_db = @mysqli_connect("localhost", "id", "pw") or die('MySQL Connect Error!!!');
+	$select_db  = @mysqli_select_db($connect_db, "db_name") or die('MySQL DB Error!!!');
+
+	$sql = "SELECT * FROM exam_board WHERE id='$id' ";
+	
+	$result = mysqli_query($connect_db, $sql);	
+	
+	$row = mysqli_fetch_assoc($result);
+?>
 
 <h1 style="color:#1a4157;">게시판 글쓰기</h1>
 <hr />
@@ -44,26 +61,27 @@ th {
 <table class="borad" >
 <tr>
 	<th>제목</th>
-	<td><input type="text" id="title" name="title" class="text_win" value=""></td>
+	<td><input type="text" id="title" name="title" class="text_win" value="<?=$row['title']?>"></td>
 </tr>
 <tr>
 	<th>글쓴이</th>
-	<td><input type="text"  id="author" name="author" class="text_win" value=""></td>
+	<td><input type="text"  id="author" name="author" class="text_win" value="<?=$row['author']?>"></td>
 </tr>
 
 <tr>
 	<th>내용</th>
-	<td><textarea cols="100%" rows="50%"  id="content" name="content" class="text_win" value=""></textarea></td>
+	<td><textarea cols="100%" rows="50%"  id="content" name="content" class="text_win" value=""><?=$row['content']?></textarea></td>
 </tr>
 <tr>
 	<th>패스워드</th>
-	<td><input type="password"  id="password" name="password" class="text_win" value=""></td>
+	<td><input type="password"  id="password" name="password" class="text_win" value="<?=$row['password']?>"></td>
 </tr>
 </table>
 </br>
 
 <div align="center">
-	<input type="submit" value="확 인" id="frm_btn" class="frm_btn button"/>
+	<input type="button" value="취 소" id="cancel" class="frm_btn button" onclick="history.back(-1); return false;">
+	<input type="submit" value="&#x2714확 인" id="frm_btn" class="frm_btn button check"/>
 
 	</form>
 
@@ -75,7 +93,7 @@ th {
 
 $(document).ready(function(){
 	
-
+var $id = "<? echo $id?>";
 	$("#frm").submit(function(event){
 	
 		var title = $("#title").val();
@@ -85,7 +103,7 @@ $(document).ready(function(){
 		var password = $("#password").val();
 
 		var content = $("#content").val();
-		
+			
 		if(title == ""){
 			alert("제목을 입력해주세요");
 			return false;
@@ -102,6 +120,11 @@ $(document).ready(function(){
 			alert("내용을 입력해주세요.");
 			return false;
 		}
+		
+		if($id != ""){
+			$("#frm").attr('action', 'exam32_update.php?id=<?=$id?>');
+		}
+
 	});
 
 });
