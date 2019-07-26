@@ -46,7 +46,6 @@ echo "-아래 checkbox 들을 javascript 또는 jquery 를 이용하여 문제�
 for($i=1; $i<= 30; $i++) {
 ?>
 	<input type="checkbox" name="check_<?=$i?>" id="check_<?=$i?>" class="check" value="<?=$i?>" data-name="<?=$i?>번 박스" /><?=$i?>&nbsp;&nbsp;
-	
 <?
 }
 
