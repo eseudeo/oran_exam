@@ -1,23 +1,5 @@
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <style>
-table {
-  border-collapse: separate;
-  width: 100%;
-}
-
-th {
-	padding: 8px;
-	background-color: #acc2d9;
-	color: white;
-}
-
-.text_win {
-	padding: 8px;
-	text-align: left;
-	border: 1px solid #ddd;
-	width: 50%;
-}
-
 .button {
   background-color: #acc2d9;
   border: none;
@@ -54,6 +36,23 @@ title {
     text-align: right;
     color: #777;
 }
+#comments {
+    float: left;
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    border: 2px solid #66575a;
+}
+table {
+        border-spacing: 0px 10px;
+      }
+
+ .table-row {
+    background-color: #E8E8E8;
+	padding: 8px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+  }
 </style>
 
 <?
@@ -61,13 +60,14 @@ title {
 	$select_db  = @mysqli_select_db($connect_db, "db_name") or die('MySQL DB Error!!!');
 	
 	$id = $_GET[no];
-
+	
 	$post_sql =  "SELECT * FROM exam_board WHERE id='$id'";
 	$result = mysqli_query($connect_db, $post_sql);
 	
+	$cmt_select_query = "SELECT * FROM exam_comments WHERE post_id='$id' ";
+	$cmt_result = mysqli_query($connect_db, $cmt_select_query);
 			
 	while($row = mysqli_fetch_assoc($result)){
-	
 ?>
 <div id = "post">
 
@@ -94,16 +94,77 @@ title {
 		<input type="button" value="삭 제" onclick="location='exam33_delete.php?id=<?=$id?>&del=del' " id="del" class="frm_btn button del"/>
 	</div>
 
-<div id="comments">
-	
+<div id="list_comments" class="container">
+
+	<table >
+		<colgroup width="200px"></colgroup>
+		<colgroup width="500px"></colgroup>
+		<?
+			while($cmt_row = mysqli_fetch_assoc($cmt_result)){
+		?>
+		<tbody class="table-row">
+			<tr>
+			<td><? echo $cmt_row['author'];?></td>
+			<td rowspan="2"><? echo $cmt_row['content']; ?></td>
+			</tr>
+			<tr>
+			<td><? echo $cmt_row['regdate']; ?></td>
+			</tr>
+		</tbody>
+		<? } ?>
+	</table>
 </div>
+
+<br/><br/>
+
+<div id="">
+	<form method="post" action="exam33_cmt_update.php?post_id=<?=$id?>" id="cmt_form" class="cmt_form">
+		<table>
+			<tr>
+				<td>이름<input type="text" id="cmt_name" name="cmt_name" value=""></td>
+				<td>비밀번호<input type="password" id="cmt_pw" name="cmt_pw" value=""></td>
+			</tr>
+			<tr>
+				<td>
+					<textarea id="cmt_txt" name="cmt_txt" class="text_win" value=""></textarea>
+					<input type="submit" id="cmt_btn" class ="" value="등록하기">
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+
 	<input type="button" value="목 록" onclick="location='exam33.php'" class="frm_btn button"/>
 
 <script type="text/javascript">
 $(document).ready(function() { 
 
-	$("#del").click(function(){ 
+	$("#cmt_form").submit(function(event){
 	
+		var name = $("#cmt_name").val();
+
+		var pw = $("#cmt_pw").val();
+
+		var content = $("#cmt_txt").val();
+	
+		if(name == "") {
+			alert("이름를 입력해주세요.");
+			$('#cmt_name').focus();
+			event.preventDefault();
+			return false;
+		}
+		if(pw == "") {
+			alert("패스워드를 입력해주세요.");
+			$('#cmt_pw').focus();
+			event.preventDefault();
+			return false;
+		}
+		if(content == "") {
+			alert("내용을 입력해주세요.");
+			$('#cmt_txt').focus();
+			event.preventDefault();
+			return false;
+		}
 	});
 });
 </script>
