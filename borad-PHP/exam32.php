@@ -1,25 +1,20 @@
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
-<? 
-?>
 <style>
 table {
   border-collapse: separate;
   width: 100%;
 }
-
 th {
 	padding: 8px;
 	background-color: #acc2d9;
 	color: white;
 }
-
 .text_win {
 	padding: 8px;
 	text-align: left;
 	border: 1px solid #ddd;
 	width: 50%;
 }
-
 .button {
   background-color: #acc2d9;
   border: none;
@@ -39,7 +34,6 @@ background-color: #1A5276;
 
 32. 직접 table 과 form 을 이용하여 게시판 입력 형태로 html 을 구성하고 실제로 값들을 입력받아서 exam32_update.php 파일로 값을 넘겨서 DB에 저장해보세요. 
 	DB명세표는 exam32_update.php 파일을 참조하세요. 간단하게 제목, 글쓴이, 패스워드, 내용 까지만 입력받으면 됩니다. ( 반드시 입력값을 스크립트를 이용하여 검증해야 합니다.)
-
 <? 
 	$id = $_GET[id];
 	
@@ -90,8 +84,7 @@ background-color: #1A5276;
 
 <script type="text/javascript">
 	
-$(document).ready(function(){
-	
+$(document).ready(function(){	
 var $id = "<? echo $id?>";
 	$("#frm").submit(function(event){
 	
@@ -102,7 +95,7 @@ var $id = "<? echo $id?>";
 		var password = $("#password").val();
 
 		var content = $("#content").val();
-			
+				
 		if(title == ""){
 			alert("제목을 입력해주세요");
 			return false;
@@ -124,6 +117,5 @@ var $id = "<? echo $id?>";
 			$("#frm").attr('action', 'exam32_update.php?id=<?=$id?>');
 		}
 	});
-});
-		
+});		
 </script>
